@@ -1,0 +1,13 @@
+{
+  "name": "weather-dashboard",
+  "version": 2,
+  "builds": [
+    {
+      "src": "next.config.ts",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_OPENWEATHER_API_KEY": "@openweather-api-key"
+  }
+}

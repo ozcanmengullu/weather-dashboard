@@ -1,103 +1,122 @@
-import Image from "next/image";
+'use client';
+
+import React from 'react';
+import { useWeatherStore } from '@/store/weatherStore';
+import { getTimeGreeting } from '@/utils/helper';
+import SearchBar from '@/components/SearchBar';
+import UnitToggle from '@/components/UnitToggle';
+import WeatherCard from '@/components/WeatherCard';
+import Forecast from '@/components/Forecast';
+import History from '@/components/History';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { currentWeather, forecast, isLoading, error } = useWeatherStore();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600">
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-white to-transparent"></div>
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            Weather Dashboard
+          </h1>
+          <p className="text-xl text-blue-100 mb-6">
+            {getTimeGreeting()}! Get real-time weather information for any city.
+          </p>
+          
+          <div className="flex justify-center mb-6">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+              <UnitToggle />
+            </div>
+          </div>
+        </header>
+
+        <section className="mb-8">
+          <SearchBar />
+        </section>
+
+        <main className="space-y-8">
+          {isLoading && (
+            <div className="text-center">
+              <div className="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-6 py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                <span className="text-white font-medium">Loading weather data...</span>
+              </div>
+            </div>
+          )}
+
+          {error && !isLoading && (
+            <div className="text-center">
+              <div className="bg-red-100 border border-red-300 rounded-xl p-6 max-w-2xl mx-auto">
+                <div className="text-red-600 font-medium mb-2">
+                  Unable to fetch weather data
+                </div>
+                <div className="text-red-500 text-sm">
+                  {error.message}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentWeather && !isLoading && (
+            <div className="space-y-8">
+              <section>
+                <WeatherCard weather={currentWeather} />
+              </section>
+
+              {forecast && forecast.length > 0 && (
+                <section>
+                  <Forecast forecast={forecast} />
+                </section>
+              )}
+            </div>
+          )}
+
+          {!currentWeather && !isLoading && !error && (
+            <div className="text-center py-16">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-8 max-w-2xl mx-auto">
+                <div className="text-6xl mb-6">🌤️</div>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Welcome to Weather Dashboard
+                </h2>
+                <p className="text-blue-100 mb-6">
+                  Search for any city above to get started with real-time weather information 
+                  and 5-day forecasts.
+                </p>
+                <div className="text-sm text-blue-200">
+                  <p>✨ Real-time weather data</p>
+                  <p>📅 5-day forecast</p>
+                  <p>📱 Fully responsive design</p>
+                  <p>🔄 Metric & Imperial units</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!currentWeather && !isLoading && (
+            <section>
+              <History />
+            </section>
+          )}
+        </main>
+
+        <footer className="mt-16 text-center">
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+            <p className="text-blue-100 text-sm">
+              Weather data provided by OpenWeatherMap API
+            </p>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
