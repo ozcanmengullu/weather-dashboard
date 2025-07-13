@@ -1,14 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWeatherStore } from '@/store/weatherStore';
 import { formatRelativeTime } from '@/utils/helper';
 import { SearchHistoryItem } from '@/types/weather';
 
 const History: React.FC = () => {
   const { searchHistory, searchFromHistory, clearHistory, isLoading } = useWeatherStore();
+  const [isClient, setIsClient] = useState(false);
 
-  if (searchHistory.length === 0) {
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient || searchHistory.length === 0) {
     return null;
   }
 
