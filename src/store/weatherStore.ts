@@ -68,7 +68,7 @@ export const useWeatherStore = create<WeatherStore>()(
       },
 
       fetchForecast: async (cityName: string) => {
-        const { unit } = get();
+        const { unit, addToHistory } = get();
         
         set({ isLoading: true, error: null });
         
@@ -80,6 +80,11 @@ export const useWeatherStore = create<WeatherStore>()(
             forecast: forecastData.forecast,
             isLoading: false,
             error: null 
+          });
+          
+          addToHistory({
+            cityName: forecastData.city.name,
+            country: forecastData.city.country,
           });
           
         } catch (error) {
